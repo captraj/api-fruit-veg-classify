@@ -28,3 +28,28 @@ class_labels = ['apple', 'banana', 'beetroot', 'bell pepper', 'cabbage', 'capsic
                 'lemon', 'lettuce', 'mango', 'onion', 'orange', 'paprika', 'pear', 'peas', 'pineapple', 'pomegranate',
                 'potato', 'raddish', 'soy beans', 'spinach', 'sweetcorn', 'sweetpotato', 'tomato', 'turnip',
                 'watermelon']
+
+# Define the API endpoint
+@app.route('/classify', methods=['POST'])
+def classify():
+    if 'image' not in request.files:
+        return jsonify({'error': 'No image found'})
+
+    image = request.files['image']
+    img = Image.open(image)
+    img = transform(img)
+    img = img.unsqueeze(0)
+
+    with torch.no_grad():
+        output = model(img)
+
+    _, predicted_idx = torch.max(output, 1)
+    predicted_label = class_labels[predicted_idx.item()]
+
+    return jsonify({'classification': predicted_label})
+
+
+if __name__ == '__main__':
+    # app.run(host='::', port=5000)
+    app.run(host='0.0.0.0', port=80)
+    # app.run(port=5000)

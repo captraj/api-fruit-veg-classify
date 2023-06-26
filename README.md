@@ -22,7 +22,7 @@ pip install -r requirements.txt
 
 1. Start the API server:
 ```bash
-python app.py
+python App.py
 ```
 
 2. The server will start running on http://localhost:5000.
